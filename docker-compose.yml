@@ -1,0 +1,44 @@
+version: '3.8' # defines the version of Docker Compose for the services 
+services: # defines the services that will be created
+
+  db: # defines the name of the service
+    image: "mariadb:latest" # defines the image that will be used
+    platform: linux/arm64 # defines the platform that will be used
+    restart: always # defines the restart policy
+    environment: # defines the environment variables
+      MYSQL_ROOT_PASSWORD: MyR00tMySQLPa$$5w0rD # defines the root password
+      MYSQL_DATABASE: MyWordPressDatabaseName # defines the database name
+      MYSQL_USER: MyWordpressUser # defines the user name
+      MYSQL_PASSWORD: Pa$$5w0rD # defines the user password
+    volumes: # defines the volumes that will be used
+      - db_data:/var/lib/mysql # defines the volume that will be used
+  wordpress: # defines the name of the service
+    depends_on: # defines the dependencies
+      - db # defines the dependency
+    image: "wordpress:latest" # defines the image that will be used
+    platform: linux/arm64 # defines the platform that will be used
+    restart: always # defines the restart policy
+    ports: # defines the ports that will be used
+      - "8000:80" # defines the port that will be used
+    environment: # defines the environment variables
+      WORDPRESS_DB_HOST: db:3306 # defines the database host
+      WORDPRESS_DB_USER: MyWordpressUser # defines the database user
+      WORDPRESS_DB_PASSWORD: Pa$$5w0rD # defines the database password
+      WORDPRESS_DB_NAME: MyWordPressDatabaseName # defines the database name
+    volumes: # defines the volumes that will be used
+      - ./wp-content/:/var/www/html/wp-content # defines the volume that will be used
+  phpmyadmin: # defines the name of the service
+    depends_on: # defines the dependencies
+      - db # defines the dependency
+    image: "phpmyadmin:latest" # defines the image that will be used
+    platform: linux/arm64/v8 # defines the platform that will be used
+    restart: always # defines the restart policy
+    ports: # defines the ports that will be used
+      - "8080:80" # defines the port that will be used
+    environment: # defines the environment variables
+      PMA_HOST: db # defines the host
+      MYSQL_ROOT_PASSWORD: MyR00tMySQLPa$$5w0rD # defines the root password
+      PMA_PASSWORD: Pa$$5w0rD # defines the password
+volumes: # defines the volumes that will be used
+  db_data: # defines the name of the volume
+  wp_data: # defines the name of the volume
